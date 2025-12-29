@@ -1,0 +1,42 @@
+services:
+  caddy:
+    container_name: caddy
+    image: caddy
+    # Build caddy with porkbun dns plugin
+    build:
+      context: /opt/caddy/build
+      dockerfile: Dockerfile
+      args:
+        CADDY_VER: "2.10"
+    networks: 
+      http_net:
+        ipv4_address: 10.99.11.33
+    extra_hosts:
+      - "host.docker.internal:host-gateway" # Proxy to host-mode for HA
+    hostname: caddy
+    restart: unless-stopped
+    env_file: /srv/caddy/secrets/caddy.env
+    ports:
+      - 80:80       # Needed for HTTP-01 challenge
+      - 80:80/udp
+      - 443:443
+      - 443:443/udp # Needed for HTTP/3
+    dns:
+      - 192.168.1.40
+    environment:
+      #VAULTWARDEN_DOMAIN: "https://${VAULTWARDEN_HOST}"
+      #HCVAULT_DOMAIN: "https://${HCVAULT_HOST}"
+      #EMAIL: "${CADDY_EMAIL}"
+      LOG_FILE: "/var/log/caddy.log"
+    volumes:
+      - "/opt/caddy/conf/etc-caddy:/etc/caddy"
+      #- "./data/srv:/srv"
+      #- "./config/Caddyfile:/etc/caddy/Caddyfile"
+      - "/srv/caddy/conf:/config/caddy" # rename caddy_config -> config
+      - "/srv/caddy/data/caddy:/data/caddy"     # rename caddy_data -> data
+      - "/svc/caddy/data/certs:/certs:ro"
+
+networks:
+  http_net:
+    name: http_net
+    external: true

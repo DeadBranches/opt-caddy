@@ -1,0 +1,77 @@
+{
+	servers {
+		trusted_proxies static private_ranges
+	}
+	#log default {
+	#	output stdout
+	#	format json
+	#	level ERROR
+	#}
+	email {env.CADDY_EMAIL}
+}
+
+{$VAULTWARDEN_CANONICAL_URL}, 
+{$VAULTWARDEN_CONVENIENCE_URL}, 
+{$VAULTWARDEN_GRANDFATHERED_URL} {
+	tls {
+		dns porkbun {
+			api_key {env.PORKBUN_API_KEY}
+			api_secret_key {env.PORKBUN_SECRET_KEY}
+		}
+	}
+	reverse_proxy {$VAULTWARDEN_HOST}:{$VAULTWARDEN_PORT}
+	log {
+		level ERROR
+	}
+}
+
+{$HCVAULT_DOMAIN} {
+	tls {
+		dns porkbun {
+			api_key {env.PORKBUN_API_KEY}
+			api_secret_key {env.PORKBUN_SECRET_KEY}
+		}
+	}
+	reverse_proxy vault:8200
+	log {
+		level INFO
+	}
+}
+
+{$HOMEASSISTANT_CANONICAL_URL}, 
+{$HOMEASSISTANT_CONVENIENCE_URL} {
+	tls {
+		dns porkbun {
+			api_key {env.PORKBUN_API_KEY}
+			api_secret_key {env.PORKBUN_SECRET_KEY}
+		}
+	}
+	reverse_proxy {$HOMEASSISTANT_HOST}:{$HOMEASSISTANT_PORT} {
+		header_up Host {host}
+		header_up X-Real-IP {client_ip}
+		# header_up X-Forwarded-For {remote_ip}
+		header_up X-Forwarded-Proto {scheme}
+	}
+	log {
+		level DEBUG
+	}
+}
+
+{$MAILU_CANONICAL_URL}, 
+{$MAILU_CONVENIENCE_URL},
+{$MAILU_IMAP_CANONICAL_URL},
+{$MAILU_IMAP_CONVENIENCE_URL} {
+	tls {
+		dns porkbun {
+			api_key {env.PORKBUN_API_KEY}
+			api_secret_key {env.PORKBUN_SECRET_KEY}
+		}
+	}
+	reverse_proxy {$MAILU_HOST}:{$MAILU_PORT} {
+		header_up X-Forwarded-Proto https
+		header_up X-Real-IP {remote_ip}
+	}
+	log {
+		level INFO
+	}
+}
