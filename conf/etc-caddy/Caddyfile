@@ -75,3 +75,21 @@
 		level INFO
 	}
 }
+
+
+{$ATUIN_CANONICAL_URL}, 
+{$ATUIN_CONVENIENCE_URL},
+	tls {
+		dns porkbun {
+			api_key {env.PORKBUN_API_KEY}
+			api_secret_key {env.PORKBUN_SECRET_KEY}
+		}
+	}
+	reverse_proxy {$ATUIN_HOST}:{$ATUIN_PORT} {
+		header_up X-Forwarded-Proto https
+		header_up X-Real-IP {remote_ip}
+	}
+	log {
+		level INFO
+	}
+}

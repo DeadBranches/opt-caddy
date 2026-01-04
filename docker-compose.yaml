@@ -34,7 +34,7 @@ services:
       #- "./config/Caddyfile:/etc/caddy/Caddyfile"
       - "/srv/caddy/conf:/config/caddy" # rename caddy_config -> config
       - "/srv/caddy/data/caddy:/data/caddy"     # rename caddy_data -> data
-      - "/svc/caddy/data/certs:/certs:ro"
+      - "/srv/caddy/data/certs:/certs:ro"
 
 networks:
   http_net:
