@@ -93,3 +93,19 @@
 		level INFO
 	}
 }
+
+
+{$NTFY_CANONICAL_URL}, 
+{$NTFY_CONVENIENCE_URL} { 
+	tls {
+		dns porkbun {
+			api_key {env.PORKBUN_API_KEY}
+			api_secret_key {env.PORKBUN_SECRET_KEY}
+		}
+	}
+	reverse_proxy {$NTFY_HOST}:{$NTFY_PORT} {
+	}
+	log {
+		level INFO
+	}
+}
