@@ -1,3 +1,4 @@
+name: caddy
 services:
   caddy:
     container_name: caddy
