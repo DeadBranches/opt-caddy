@@ -38,6 +38,9 @@ services:
       - "/srv/caddy/conf:/config/caddy" # rename caddy_config -> config
       - "/srv/caddy/data/caddy:/data/caddy"     # rename caddy_data -> data
       - "/srv/caddy/data/certs:/certs:ro"
+    labels:
+      STACK: caddy
+      SERVICE: caddy
 
 networks:
   http_net:
