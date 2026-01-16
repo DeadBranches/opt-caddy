@@ -1,0 +1,23 @@
+# Ignore everything by default
+*
+
+# Allow directory traversal so we can whitelist specific files
+!*/
+
+# Always keep these top-level files
+!.gitignore
+!.gitattributes
+!README.md
+!LICENSE
+!entrypoint.nu
+!docker-compose.yaml
+!*.example
+
+# Always keep these top-level directories
+!build/**/*
+
+# Also keep these:
+!data/**/*
+!conf/**/*
+!scripts/**/*
+!setup/**/*
