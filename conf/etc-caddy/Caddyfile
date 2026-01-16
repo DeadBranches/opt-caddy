@@ -2,11 +2,13 @@
 	servers {
 		trusted_proxies static private_ranges
 	}
-	#log default {
-	#	output stdout
-	#	format json
-	#	level ERROR
-	#}
+	log {
+		level INFO
+		format json
+		#output stderr
+		#format console
+		#level ERROR
+	}
 	email {env.CADDY_EMAIL}
 }
 
@@ -21,8 +23,9 @@
 	}
 	reverse_proxy {$VAULTWARDEN_HOST}:{$VAULTWARDEN_PORT}
 	log {
-		level ERROR
-		format console
+		level INFO
+		#level ERROR
+		#format console
 	}
 }
 
@@ -35,8 +38,9 @@
 	}
 	reverse_proxy vault:8200
 	log {
-		level ERROR
-		format console
+		level INFO
+		#level ERROR
+		#format console
 	}
 }
 
@@ -55,8 +59,9 @@
 		header_up X-Forwarded-Proto {scheme}
 	}
 	log {
-		level ERROR
-		format console
+		level INFO
+		#level ERROR
+		#format console
 	}
 }
 
@@ -92,12 +97,13 @@
 		header_up X-Real-IP {remote_ip}
 	}
 	log {
-		level ERROR
-		format console
+		level INFO
+		#level ERROR
+		#format console
 	}
 }
 
-{$NTFY_DOMAIN},
+{$NTFY_DOMAIN}, 
 {$NTFY_CANONICAL_URL}, 
 {$NTFY_CONVENIENCE_URL} {
 	tls {
@@ -109,14 +115,15 @@
 	reverse_proxy {$NTFY_HOST}:{$NTFY_PORT}
 
 	@httpget {
-	        protocol http
+		protocol http
 		method GET
 		path_regexp ^/([-_a-z0-9]{0,64}$|docs/|static/)
 	}
 	redir @httpget https://{host}{uri}
 
 	log {
-		level ERROR
-		format console
+		level INFO
+		#level ERROR
+		#format console
 	}
 }
