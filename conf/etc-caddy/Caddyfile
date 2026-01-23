@@ -1,7 +1,11 @@
 {
+	#admin unix//run/caddy-admin.sock
+	admin localhost:2019
+
 	servers {
 		trusted_proxies static private_ranges
 	}
+
 	log {
 		level INFO
 		format json
