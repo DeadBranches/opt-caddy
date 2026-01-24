@@ -1,16 +1,43 @@
 name: caddy
+
+x-account:
+  account_name: svc-caddy
+  id: 748
+  user: &user "748:748"
+
+x-resource-limits-caddy: &resource_limits_caddy
+  cpus: 2.0
+  mem_reservation: "40m"
+  mem_limit: "64m"
+  memswap_limit: "96m"
+  pids_limit: 256
+
+x-blkio-limits-default: &blkio_defaults
+  blkio_config:
+    device_read_bps:
+      - path: /dev/sda
+        rate: "20mb"
+    device_write_bps:
+      - path: /dev/sda
+        rate: "10mb"
+    device_read_iops:
+      - path: /dev/sda
+        rate: 1000
+    device_write_iops:
+      - path: /dev/sda
+        rate: 750
+
 services:
   caddy:
     container_name: caddy
     image: caddy
-    # Build caddy with porkbun dns plugin
-    build:
+    <<: [*resource_limits_caddy, *blkio_defaults]
+    build:  # Build caddy with porkbun plugin
       context: /opt/caddy/build
       dockerfile: Dockerfile
       args:
         CADDY_VER: "2.10"
-    group_add:
-      - "991" # svc-caddy
+    user: *user
     networks: 
       http_net:
         ipv4_address: 10.99.11.33
