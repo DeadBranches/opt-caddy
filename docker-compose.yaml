@@ -12,26 +12,14 @@ x-resource-limits-caddy: &resource_limits_caddy
   memswap_limit: "96m"
   pids_limit: 256
 
-x-blkio-limits-default: &blkio_defaults
-  blkio_config:
-    device_read_bps:
-      - path: /dev/sda
-        rate: "20mb"
-    device_write_bps:
-      - path: /dev/sda
-        rate: "10mb"
-    device_read_iops:
-      - path: /dev/sda
-        rate: 1000
-    device_write_iops:
-      - path: /dev/sda
-        rate: 750
-
 services:
   caddy:
+    extends:
+      file: /opt/.defaults/resource-limits.yaml
+      service: blkio_defaults
     container_name: caddy
     image: caddy
-    <<: [*resource_limits_caddy, *blkio_defaults]
+    <<: [*resource_limits_caddy]
     build:  # Build caddy with porkbun plugin
       context: /opt/caddy/build
       dockerfile: Dockerfile
@@ -45,7 +33,16 @@ services:
       - "host.docker.internal:host-gateway" # Proxy to host-mode for HA
     hostname: caddy
     restart: unless-stopped
-    env_file: /srv/caddy/secrets/caddy.env
+    env_file: 
+      #- /srv/caddy/secrets/caddy-old.env
+      - /srv/caddy/secrets/caddy.env
+      - /srv/caddy/secrets/caddy-atuin.env
+      - /srv/caddy/secrets/caddy-bitwarden-mxroute.env
+      - /srv/caddy/secrets/caddy-home-assistant.env
+      - /srv/caddy/secrets/caddy-mailu.env
+      - /srv/caddy/secrets/caddy-ntfy.env
+      - /srv/caddy/secrets/caddy-pihole.env
+      - /srv/caddy/secrets/caddy-vaultwarden.env
     ports:
       - 80:80       # Needed for HTTP-01 challenge
       - 80:80/udp
@@ -53,23 +50,16 @@ services:
       - 443:443/udp # Needed for HTTP/3
     dns:
       - 192.168.1.40
-    environment:
-      #VAULTWARDEN_DOMAIN: "https://${VAULTWARDEN_HOST}"
-      #HCVAULT_DOMAIN: "https://${HCVAULT_HOST}"
-      #EMAIL: "${CADDY_EMAIL}"
-      LOG_FILE: "/var/log/caddy.log"
     volumes:
       - "/opt/caddy/conf/etc-caddy:/etc/caddy"
-      #- "./data/srv:/srv"
-      #- "./config/Caddyfile:/etc/caddy/Caddyfile"
-      - "/srv/caddy/conf:/config/caddy" # rename caddy_config -> config
-      - "/srv/caddy/data/caddy:/data/caddy"     # rename caddy_data -> data
+      - "/srv/caddy/conf:/config/caddy"       # rename caddy_config -> config
+      - "/srv/caddy/data/caddy:/data/caddy"   # rename caddy_data -> data
       - "/srv/caddy/data/certs:/certs:ro"
     healthcheck:
-      test: ["CMD-SHELL", "wget -qO- http://localhost:2019/config >/dev/null 2>&1 || exit 1"]
+      test: ["CMD-SHELL", "nc -z 127.0.0.1 2019"]
       start_period: 60s
-      interval: 5s
-      timeout: 3s
+      interval: 60s
+      timeout: 5s
       retries: 3
     labels:
       STACK: caddy

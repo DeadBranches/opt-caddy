@@ -1,5 +1,5 @@
 {
-	#admin unix//run/caddy-admin.sock
+	admin unix//run/caddy-admin.sock
 	admin localhost:2019
 
 	servers {
@@ -9,7 +9,7 @@
 	log {
 		level INFO
 		format json
-		#output stderr
+		output stderr
 		#format console
 		#level ERROR
 	}
@@ -28,25 +28,27 @@
 	reverse_proxy {$VAULTWARDEN_HOST}:{$VAULTWARDEN_PORT}
 	log {
 		level INFO
+		output stdout
 		#level ERROR
 		#format console
 	}
 }
 
-{$HCVAULT_DOMAIN} {
-	tls {
-		dns porkbun {
-			api_key {env.PORKBUN_API_KEY}
-			api_secret_key {env.PORKBUN_SECRET_KEY}
-		}
-	}
-	reverse_proxy vault:8200
-	log {
-		level INFO
-		#level ERROR
-		#format console
-	}
-}
+#{$HCVAULT_DOMAIN} {
+#	tls {
+#		dns porkbun {
+#			api_key {env.PORKBUN_API_KEY}
+#			api_secret_key {env.PORKBUN_SECRET_KEY}
+#3		}
+#	}
+#	reverse_proxy vault:8200
+#	log {
+#3		level INFO
+#		output stdout
+#		#level ERROR
+#		#format console
+#	}
+#}
 
 {$HOMEASSISTANT_CANONICAL_URL}, 
 {$HOMEASSISTANT_CONVENIENCE_URL} {
@@ -64,6 +66,7 @@
 	}
 	log {
 		level INFO
+		output stdout
 		#level ERROR
 		#format console
 	}
@@ -85,6 +88,7 @@
 	}
 	log {
 		level INFO
+		output stdout
 	}
 }
 
@@ -102,6 +106,7 @@
 	}
 	log {
 		level INFO
+		output stdout
 		#level ERROR
 		#format console
 	}
@@ -127,7 +132,39 @@
 
 	log {
 		level INFO
+		output stdout
 		#level ERROR
 		#format console
+	}
+}
+
+{$BITWARDENMXROUTEWEB_CANONICAL_URL}, 
+{$BITWARDENMXROUTEWEB_CONVENIENCE_URL} {
+	tls {
+		dns porkbun {
+			api_key {env.PORKBUN_API_KEY}
+			api_secret_key {env.PORKBUN_SECRET_KEY}
+		}
+	}
+	reverse_proxy {$BITWARDENMXROUTEWEB_HOST}:{$BITWARDENMXROUTEWEB_PORT} 
+	log {
+		level DEBUG 
+		output stdout
+	}
+}
+
+
+{$BITWARDENMXROUTESERVER_CANONICAL_URL}, 
+{$BITWARDENMXROUTESERVER_CONVENIENCE_URL} {
+	tls {
+		dns porkbun {
+			api_key {env.PORKBUN_API_KEY}
+			api_secret_key {env.PORKBUN_SECRET_KEY}
+		}
+	}
+	reverse_proxy {$BITWARDENMXROUTESERVER_HOST}:{$BITWARDENMXROUTESERVER_PORT} 
+	log {
+		level DEBUG
+		output stdout
 	}
 }
