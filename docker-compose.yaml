@@ -64,6 +64,11 @@ services:
     labels:
       STACK: caddy
       SERVICE: caddy
+    logging:
+      driver: syslog
+      options:
+        syslog-address: "udp://192.168.1.40:514"
+        tag: "caddy"
 
 networks:
   http_net:

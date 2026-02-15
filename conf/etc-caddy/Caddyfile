@@ -27,7 +27,7 @@
 	}
 	reverse_proxy {$VAULTWARDEN_HOST}:{$VAULTWARDEN_PORT}
 	log {
-		level INFO
+		level DEBUG 
 		output stdout
 		#level ERROR
 		#format console
@@ -146,13 +146,12 @@
 			api_secret_key {env.PORKBUN_SECRET_KEY}
 		}
 	}
-	reverse_proxy {$BITWARDENMXROUTEWEB_HOST}:{$BITWARDENMXROUTEWEB_PORT} 
+	reverse_proxy {$BITWARDENMXROUTEWEB_HOST}:{$BITWARDENMXROUTEWEB_PORT}
 	log {
-		level DEBUG 
+		level DEBUG
 		output stdout
 	}
 }
-
 
 {$BITWARDENMXROUTESERVER_CANONICAL_URL}, 
 {$BITWARDENMXROUTESERVER_CONVENIENCE_URL} {
@@ -162,7 +161,7 @@
 			api_secret_key {env.PORKBUN_SECRET_KEY}
 		}
 	}
-	reverse_proxy {$BITWARDENMXROUTESERVER_HOST}:{$BITWARDENMXROUTESERVER_PORT} 
+	reverse_proxy {$BITWARDENMXROUTESERVER_HOST}:{$BITWARDENMXROUTESERVER_PORT}
 	log {
 		level DEBUG
 		output stdout
