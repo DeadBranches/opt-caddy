@@ -5,6 +5,9 @@ x-account:
   id: 748
   user: &user "748:748"
 
+x-backup:
+  database_type: none
+
 x-resource-limits-caddy: &resource_limits_caddy
   cpus: 2.0
   mem_reservation: "40m"
