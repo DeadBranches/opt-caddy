@@ -6,13 +6,35 @@
 		trusted_proxies static private_ranges
 	}
 
-	log {
-		level INFO
+	#log {
+#		level INFO
+#		format json
+#		output stderr
+#		#format console
+#		#level ERROR
+#	}
+
+	# Everything else, unsampled
+	log default {
+		output stdout
 		format json
-		output stderr
-		#format console
-		#level ERROR
+		exclude http.log.error.ha
 	}
+
+	# Only the noisy one, sampled
+	log ha_err_sampled {
+		output stdout
+		format json
+		level ERROR
+		include http.log.error.ha
+		sampling {
+			interval 30000000000 
+			first 1
+			thereafter 500
+		}
+	}
+
+
 	email {env.CADDY_EMAIL}
 }
 
@@ -52,23 +74,25 @@
 
 {$HOMEASSISTANT_CANONICAL_URL}, 
 {$HOMEASSISTANT_CONVENIENCE_URL} {
+	log_skip /api/websocket*
+	log_skip /auth/token*
 	tls {
 		dns porkbun {
 			api_key {env.PORKBUN_API_KEY}
 			api_secret_key {env.PORKBUN_SECRET_KEY}
 		}
 	}
+
 	reverse_proxy {$HOMEASSISTANT_HOST}:{$HOMEASSISTANT_PORT} {
 		header_up Host {host}
 		header_up X-Real-IP {client_ip}
 		# header_up X-Forwarded-For {remote_ip}
 		header_up X-Forwarded-Proto {scheme}
+		fail_duration 1m
+		max_fails 1
 	}
-	log {
-		level INFO
-		output stdout
-		#level ERROR
-		#format console
+	log ha { 
+		output discard 
 	}
 }
 
@@ -85,6 +109,8 @@
 	reverse_proxy {$MAILU_HOST}:{$MAILU_PORT} {
 		header_up X-Forwarded-Proto https
 		header_up X-Real-IP {remote_ip}
+		fail_duration 1m
+		max_fails 2
 	}
 	log {
 		level INFO
