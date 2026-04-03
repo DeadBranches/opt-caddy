@@ -1,1 +1,1 @@
-{identity: {account-name: svc-caddy, uid: 748, gid: 748}, backup: {database-type: [none], do-backup: true}}
+{identity: [[account-name, uid, gid, comment]; [svc-caddy, 748, 748, null]], backup: [[database-type, do-backup]; [none, true]]}
