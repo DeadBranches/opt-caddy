@@ -10,7 +10,7 @@ x-backup:
 
 x-resource-limits-caddy: &resource_limits_caddy
   cpus: 2.0
-  mem_reservation: "40m"
+  mem_reservation: "64m"
   mem_limit: "64m"
   memswap_limit: "96m"
   pids_limit: 256
