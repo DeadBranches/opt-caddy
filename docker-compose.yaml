@@ -1,9 +1,8 @@
 name: caddy
 
-x-account:
-  account_name: svc-caddy
-  id: 748
-  user: &user "748:748"
+x-runtime:
+  identity:
+    user: &user "748:748"
 
 services:
   caddy:
@@ -23,23 +22,42 @@ services:
     hostname: caddy
     restart: on-failure
     env_file: 
-      #- /srv/caddy/secrets/caddy-old.env
+      # /srv/caddy/secrets/caddy-old.env
       - /srv/caddy/secrets/caddy.env
-      # - /srv/caddy/secrets/caddy-breeze-atuin.env           # -> 8888
+      #
+      # /srv/caddy/secrets/caddy-breeze-atuin.env             # -> 8888
       - /srv/caddy/secrets/caddy-tornado-atuin.env            # -> 8888
+      #
       - /srv/caddy/secrets/caddy-breeze-bitwarden-mxroute.env # -> 6123
-      #- /srv/caddy/secrets/caddy-breeze-home-assistant.env   # -> 8123
+      #
+      # /srv/caddy/secrets/caddy-breeze-home-assistant.env    # -> 8123
       - /srv/caddy/secrets/caddy-tornado-home-assistant.env   # -> 8123
-      # - /srv/caddy/secrets/caddy-breeze-mailu.env
+      #
+      # /srv/caddy/secrets/caddy-breeze-mailu.env             # -> 8088
       - /srv/caddy/secrets/caddy-tornado-mailu.env            # -> 8088
+      #
       - /srv/caddy/secrets/caddy-breeze-ntfy.env              # -> 80
+      #
       - /srv/caddy/secrets/caddy-breeze-pihole.env            # -> 8443
-      # - /srv/caddy/secrets/caddy-breeze-vaultwarden.env     # -> 80
+      #
+      # /srv/caddy/secrets/caddy-breeze-vaultwarden.env       # -> 80
       - /srv/caddy/secrets/caddy-tornado-vaultwarden.env      # -> 8215
+      #
       - /srv/caddy/secrets/caddy-cyclone-comfyui.env          # -> 1131
-      # - /srv/caddy/secrets/caddy-cyclone-vllm_omni.env      # -> 1141
+      #
+      # - cyclone-vllm_omni and flurry-vllm_omni are both present to allow shifting the tts 
+      #   inference load to one server or another depending on what else is running on the server.
+      # - If comfyui isn't running on cyclone, then cyclone is free to run vllm-omni.
+      # - If comfyui is running on cyclone, then it's better to take the llm token generation
+      #   penalty and run vllm-omni on flurry, because running vllm-omni and comfyui on cyclone
+      #   simultaneously increases image generation time from 20s to 90+s.
+      # speech2.urbanlight.ca:
+      - /srv/caddy/secrets/caddy-cyclone-vllm_omni.env        # -> 1141
+      # speech.urbanlight.ca:
       - /srv/caddy/secrets/caddy-flurry-vllm_omni.env         # -> 1131
+      #
       - /srv/caddy/secrets/caddy-flurry-koboldcpp.env         # -> 1111
+      #
       - /srv/caddy/secrets/caddy-flurry-sillytavern.env       # -> 1121
     ports:
       - 80:80       # Needed for HTTP-01 challenge

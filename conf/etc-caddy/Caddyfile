@@ -193,26 +193,24 @@
 		output stdout
 	}
 }
-{$VLLMOMNI_CANONICAL_URL},
-{$VLLMOMNI_LAN_CANONICAL_URL},
-{$VLLMOMNI_CONVENIENCE_URL} {
+{$VLLMOMNI_FLURRY_CONVENIENCE_URL} {
 	tls {
 		dns porkbun {
 			api_key {env.PORKBUN_API_KEY}
 			api_secret_key {env.PORKBUN_SECRET_KEY}
 		}
 	}
-	reverse_proxy {$VLLMOMNI_HOST}:{$VLLMOMNI_PORT}
+	reverse_proxy {$VLLMOMNI_FLURRY_HOST}:{$VLLMOMNI_FLURRY_PORT}
 }
 
-{$VLLMOMNI2_CONVENIENCE_URL} {
+{$VLLMOMNI_CYCLONE_CONVENIENCE_URL} {
 	tls {
 		dns porkbun {
 			api_key {env.PORKBUN_API_KEY}
 			api_secret_key {env.PORKBUN_SECRET_KEY}
 		}
 	}
-	reverse_proxy {$VLLMOMNI2_HOST}:{$VLLMOMNI2_PORT}
+	reverse_proxy {$VLLMOMNI_CYCLONE_HOST}:{$VLLMOMNI_CYCLONE_PORT}
 }
 
 {$KOBOLDCPP_CANONICAL_URL},
