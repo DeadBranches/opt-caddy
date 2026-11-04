@@ -5,24 +5,10 @@ x-account:
   id: 748
   user: &user "748:748"
 
-x-backup:
-  database_type: none
-
-x-resource-limits-caddy: &resource_limits_caddy
-  cpus: 2.0
-  mem_reservation: "64m"
-  mem_limit: "64m"
-  memswap_limit: "96m"
-  pids_limit: 256
-
 services:
   caddy:
-    extends:
-      file: /opt/.defaults/resource-limits.yaml
-      service: blkio_defaults
     container_name: caddy
     image: caddy
-    <<: [*resource_limits_caddy]
     build:  # Build caddy with porkbun plugin
       context: /opt/caddy/build
       dockerfile: Dockerfile
@@ -35,17 +21,26 @@ services:
     extra_hosts:
       - "host.docker.internal:host-gateway" # Proxy to host-mode for HA
     hostname: caddy
-    restart: unless-stopped
+    restart: on-failure
     env_file: 
       #- /srv/caddy/secrets/caddy-old.env
       - /srv/caddy/secrets/caddy.env
-      - /srv/caddy/secrets/caddy-atuin.env
-      - /srv/caddy/secrets/caddy-bitwarden-mxroute.env
-      - /srv/caddy/secrets/caddy-home-assistant.env
-      - /srv/caddy/secrets/caddy-mailu.env
-      - /srv/caddy/secrets/caddy-ntfy.env
-      - /srv/caddy/secrets/caddy-pihole.env
-      - /srv/caddy/secrets/caddy-vaultwarden.env
+      # - /srv/caddy/secrets/caddy-breeze-atuin.env           # -> 8888
+      - /srv/caddy/secrets/caddy-tornado-atuin.env            # -> 8888
+      - /srv/caddy/secrets/caddy-breeze-bitwarden-mxroute.env # -> 6123
+      #- /srv/caddy/secrets/caddy-breeze-home-assistant.env   # -> 8123
+      - /srv/caddy/secrets/caddy-tornado-home-assistant.env   # -> 8123
+      # - /srv/caddy/secrets/caddy-breeze-mailu.env
+      - /srv/caddy/secrets/caddy-tornado-mailu.env            # -> 8088
+      - /srv/caddy/secrets/caddy-breeze-ntfy.env              # -> 80
+      - /srv/caddy/secrets/caddy-breeze-pihole.env            # -> 8443
+      # - /srv/caddy/secrets/caddy-breeze-vaultwarden.env     # -> 80
+      - /srv/caddy/secrets/caddy-tornado-vaultwarden.env      # -> 8215
+      - /srv/caddy/secrets/caddy-cyclone-comfyui.env          # -> 1131
+      # - /srv/caddy/secrets/caddy-cyclone-vllm_omni.env      # -> 1141
+      - /srv/caddy/secrets/caddy-flurry-vllm_omni.env         # -> 1131
+      - /srv/caddy/secrets/caddy-flurry-koboldcpp.env         # -> 1111
+      - /srv/caddy/secrets/caddy-flurry-sillytavern.env       # -> 1121
     ports:
       - 80:80       # Needed for HTTP-01 challenge
       - 80:80/udp

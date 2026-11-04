@@ -37,17 +37,16 @@
 	email {env.CADDY_EMAIL}
 }
 
-{$VAULTWARDEN_CANONICAL_URL}, 
-{$VAULTWARDEN_CANONICAL_LAN_URL}, 
-{$VAULTWARDEN_CONVENIENCE_URL}, 
-{$VAULTWARDEN_GRANDFATHERED_URL} {
+{$VAULTWARDEN_CONVENIENCE_URL} {
 	tls {
 		dns porkbun {
 			api_key {env.PORKBUN_API_KEY}
 			api_secret_key {env.PORKBUN_SECRET_KEY}
 		}
 	}
-	reverse_proxy {$VAULTWARDEN_HOST}:{$VAULTWARDEN_PORT}
+	reverse_proxy {$VAULTWARDEN_HOST}:{$VAULTWARDEN_PORT} {
+		header_up X-Real-IP {remote_host}
+	}
 	log {
 		level DEBUG
 		output stdout
@@ -72,7 +71,7 @@
 #	}
 #}
 
-{$HOMEASSISTANT_CANONICAL_URL}, 
+{$HOMEASSISTANT_CANONICAL_URL},
 {$HOMEASSISTANT_CONVENIENCE_URL} {
 	log_skip /api/websocket*
 	log_skip /auth/token*
@@ -96,9 +95,9 @@
 	}
 }
 
-{$MAILU_CANONICAL_URL}, 
-{$MAILU_CONVENIENCE_URL}, 
-{$MAILU_IMAP_CANONICAL_URL}, 
+{$MAILU_CANONICAL_URL},
+{$MAILU_CONVENIENCE_URL},
+{$MAILU_IMAP_CANONICAL_URL},
 {$MAILU_IMAP_CONVENIENCE_URL} {
 	tls {
 		dns porkbun {
@@ -118,7 +117,7 @@
 	}
 }
 
-{$ATUIN_CANONICAL_URL}, 
+{$ATUIN_CANONICAL_URL},
 {$ATUIN_CONVENIENCE_URL} {
 	tls {
 		dns porkbun {
@@ -138,8 +137,8 @@
 	}
 }
 
-{$NTFY_DOMAIN}, 
-{$NTFY_CANONICAL_URL}, 
+{$NTFY_DOMAIN},
+{$NTFY_CANONICAL_URL},
 {$NTFY_CONVENIENCE_URL} {
 	tls {
 		dns porkbun {
@@ -164,7 +163,7 @@
 	}
 }
 
-{$BITWARDENMXROUTESERVER_CANONICAL_URL}, 
+{$BITWARDENMXROUTESERVER_CANONICAL_URL},
 {$BITWARDENMXROUTESERVER_CONVENIENCE_URL} {
 	tls {
 		dns porkbun {
@@ -173,6 +172,75 @@
 		}
 	}
 	reverse_proxy {$BITWARDENMXROUTESERVER_HOST}:{$BITWARDENMXROUTESERVER_PORT}
+	log {
+		level DEBUG
+		output stdout
+	}
+}
+
+{$COMFYUI_CANONICAL_URL},
+{$COMFYUI_LAN_CANONICAL_URL},
+{$COMFYUI_CONVENIENCE_URL} {
+	tls {
+		dns porkbun {
+			api_key {env.PORKBUN_API_KEY}
+			api_secret_key {env.PORKBUN_SECRET_KEY}
+		}
+	}
+	reverse_proxy {$COMFYUI_HOST}:{$COMFYUI_PORT}
+	log {
+		level DEBUG
+		output stdout
+	}
+}
+{$VLLMOMNI_CANONICAL_URL},
+{$VLLMOMNI_LAN_CANONICAL_URL},
+{$VLLMOMNI_CONVENIENCE_URL} {
+	tls {
+		dns porkbun {
+			api_key {env.PORKBUN_API_KEY}
+			api_secret_key {env.PORKBUN_SECRET_KEY}
+		}
+	}
+	reverse_proxy {$VLLMOMNI_HOST}:{$VLLMOMNI_PORT}
+}
+
+{$VLLMOMNI2_CONVENIENCE_URL} {
+	tls {
+		dns porkbun {
+			api_key {env.PORKBUN_API_KEY}
+			api_secret_key {env.PORKBUN_SECRET_KEY}
+		}
+	}
+	reverse_proxy {$VLLMOMNI2_HOST}:{$VLLMOMNI2_PORT}
+}
+
+{$KOBOLDCPP_CANONICAL_URL},
+{$KOBOLDCPP_LAN_CANONICAL_URL},
+{$KOBOLDCPP_CONVENIENCE_URL} {
+	tls {
+		dns porkbun {
+			api_key {env.PORKBUN_API_KEY}
+			api_secret_key {env.PORKBUN_SECRET_KEY}
+		}
+	}
+	reverse_proxy {$KOBOLDCPP_HOST}:{$KOBOLDCPP_PORT}
+	log {
+		level DEBUG
+		output stdout
+	}
+}
+
+{$SILLYTAVERN_CANONICAL_URL},
+{$SILLYTAVERN_LAN_CANONICAL_URL},
+{$SILLYTAVERN_CONVENIENCE_URL} {
+	tls {
+		dns porkbun {
+			api_key {env.PORKBUN_API_KEY}
+			api_secret_key {env.PORKBUN_SECRET_KEY}
+		}
+	}
+	reverse_proxy {$SILLYTAVERN_HOST}:{$SILLYTAVERN_PORT}
 	log {
 		level DEBUG
 		output stdout
